@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
-          username: user.username,
+          username: user.username || '', // Ensure username is never null
           isAdmin: user.isAdmin,
         };
       },

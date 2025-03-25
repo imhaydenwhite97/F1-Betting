@@ -4,13 +4,14 @@ import { createId } from '@paralleldrive/cuid2';
 import * as schema from './schema';
 import { join } from 'path';
 import fs from 'fs';
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
 // Determine if we're in a production environment (Vercel)
 const isProduction = process.env.NODE_ENV === 'production';
 const isVercel = process.env.VERCEL === '1';
 
 // Database configuration
-let DB_PATH = './data';
+const DB_PATH = './data';
 let DB_FILE = join(DB_PATH, 'f1-fantasy.db');
 
 // Ensure database directory exists in development
@@ -21,8 +22,9 @@ if (!isProduction) {
 }
 
 // Initialize SQLite database with appropriate error handling
-let sqlite;
-let db;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let sqlite: any;
+let dbInstance: BetterSQLite3Database<typeof schema>;
 
 if (isVercel) {
   // On Vercel, use an in-memory database
@@ -34,7 +36,7 @@ try {
   sqlite = new Database(DB_FILE);
 
   // Add query capability to the database client
-  db = drizzle(sqlite, {
+  dbInstance = drizzle(sqlite, {
     schema,
     logger: !isProduction, // Only log queries in development
   });
@@ -49,7 +51,7 @@ try {
         fs.unlinkSync(DB_FILE);
       }
       sqlite = new Database(DB_FILE);
-      db = drizzle(sqlite, { schema });
+      dbInstance = drizzle(sqlite, { schema });
     } catch (secondError) {
       console.error('Fatal error initializing SQLite database:', secondError);
       throw secondError;
@@ -59,12 +61,12 @@ try {
     console.error('Database initialization failed in production environment');
     // Create an in-memory database as fallback
     sqlite = new Database(':memory:');
-    db = drizzle(sqlite, { schema });
+    dbInstance = drizzle(sqlite, { schema });
   }
 }
 
-// Export the database client
-export { db };
+// Export the database client with proper type
+export const db = dbInstance;
 
 // Helper to generate unique IDs
 export const generateId = () => createId();

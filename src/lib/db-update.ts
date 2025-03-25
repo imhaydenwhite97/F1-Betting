@@ -23,7 +23,7 @@ export async function updateSchema() {
       try {
         // Add password column to users table
         // Note: SQLite has limited ALTER TABLE support
-        await db.execute(sql`ALTER TABLE users ADD COLUMN password TEXT;`);
+        await db.run(sql`ALTER TABLE users ADD COLUMN password TEXT;`);
         console.log("Password column added successfully");
       } catch (error) {
         // If the column already exists, this will fail, but we can ignore it

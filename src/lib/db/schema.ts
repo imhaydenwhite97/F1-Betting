@@ -5,6 +5,7 @@ import {
   integer,
   primaryKey
 } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
 export const users = sqliteTable('users', {
   id: text('id').primaryKey().notNull(),
@@ -14,8 +15,8 @@ export const users = sqliteTable('users', {
   password: text('password'), // Add password field
   image: text('image'),
   isAdmin: integer('is_admin', { mode: 'boolean' }).default(false).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(Date.now),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(Date.now),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -33,8 +34,8 @@ export const races = sqliteTable('races', {
   isActive: integer('is_active', { mode: 'boolean' }).default(true).notNull(),
   bettingDeadline: integer('betting_deadline', { mode: 'timestamp' }).notNull(),
   fastestLapDriver: text('fastest_lap_driver'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(Date.now),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(Date.now),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });
 
 export const racesRelations = relations(races, ({ many }) => ({
@@ -49,8 +50,8 @@ export const drivers = sqliteTable('drivers', {
   team: text('team').notNull(),
   code: text('code').unique().notNull(),
   isActive: integer('is_active', { mode: 'boolean' }).default(true).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(Date.now),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(Date.now),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });
 
 export const driversRelations = relations(drivers, ({ many }) => ({
@@ -64,8 +65,8 @@ export const results = sqliteTable('results', {
   position: integer('position'),
   dnf: integer('dnf', { mode: 'boolean' }).default(false).notNull(),
   fastestLap: integer('fastest_lap', { mode: 'boolean' }).default(false).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(Date.now),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(Date.now),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 }, (table) => {
   return {
     raceDriverUnique: primaryKey({ columns: [table.raceId, table.driverId] }),
@@ -90,8 +91,8 @@ export const bets = sqliteTable('bets', {
   predictions: text('predictions', { mode: 'json' }).notNull(),
   score: integer('score'),
   scoringDetails: text('scoring_details', { mode: 'json' }),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(Date.now),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(Date.now),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 }, (table) => {
   return {
     userRaceUnique: primaryKey({ columns: [table.userId, table.raceId] }),
