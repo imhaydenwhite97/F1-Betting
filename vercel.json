@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/db-init/public",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "buildCommand": "bun run db:init && bun run build",
+  "env": {
+    "NEXTAUTH_URL": "${VERCEL_URL}",
+    "NEXTAUTH_SECRET": "${NEXTAUTH_SECRET}"
+  }
+}
