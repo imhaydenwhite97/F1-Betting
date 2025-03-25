@@ -1,0 +1,77 @@
+SQLite format 3@  .�)�����w��	�~OE	�	p����tablebetsbetsCREATE TABLE bets (
+        id TEXT PRIMARY KEY NOT NULL,
+        user_id TEXT NOT NULL,
+        race_id TEXT NOT NULL,
+        predictions TEXT NOT NULL,
+        score INTEGER,
+        scoring_details TEXT,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (race_id) REFERENCES races(id) ON DELETE CASCADE,
+        UNIQUE(user_id, race_id)
+      )';indexsqlite_autoindex_bets_2bets';indexsqlite_autoindex_bets_1bets�(
+�'tableresultsresultsCREATE TABLE results (
+        id TEXT PRIMARY KEY NOT NULL,
+        race_id TEXT NOT NULL,
+        driver_id TEXT NOT NULL,
+        position INTEGER,
+        dnf INTEGER NOT NULL DEFAULT 0,
+        fastest_lap INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        FOREIGN KEY (race_id) REFERENCES races(id) ON DELETE CASCADE,
+        FOREIGN KEY (driver_id) REFERENCES drivers(id),
+        UNIQUE(race_id, driver_id)
+      )-Aindexsqlite_autoindex_results_2results-Aindexsqlite_autoindex_results_1results�~�StabledriversdriversCREATE TABLE drivers (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        number INTEGER NOT NULL,
+        team TEXT NOT NULL,
+        code TEXT UNIQUE NOT NULL,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+      )-	Aindexsqlite_autoindex_drivers_2drivers
+-Aindexsqlite_autoindex_drivers_1drivers	��	tableracesracesCREATE TABLE races (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        location TEXT NOT NULL,
+        date INTEGER NOT NULL,
+        season INTEGER NOT NULL,
+        round INTEGER NOT NULL,
+        is_completed INTEGER NOT NULL DEFAULT 0,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        betting_deadline INTEGER NOT NULL,
+        fastest_lap_driver TEXT,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+      ))=indexsqlite_autoindex_races_1races��gtableusersusersCREATE TABLE users (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        username TEXT UNIQUE,
+        password TEXT,
+        image TEXT,
+        is_admin INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+      ))=indexsqlite_autoindex_users_3users)=indexsqlite_autoindex_users_2users)=indexsqlite_autoindex_users_1users  �k=-�Ozsolp2tmu7cvn60j5enfpzxhTest Useruser@example.comf1_fanba80ab980ba57c6cb87b0bf3d4ed76a3:a221ea18f85be92b6c21d58eb2aa5cf5aec58d29f931a477229e79c56a71a6907b70c5a73dd856406db00c0e6637ddf7832e1c4f793619c5b010ada92857e2a9g���g����o=!/�O	w1d7newzs7v5kfgv0tyzmj31Admin Useradmin@example.comadmin_f12bea9be5b98efdc8184032a1b1e3d784:3e0c38191445c1979864049f059628753825decc59fe5ebd92ea4d94987edbe37457173964dfdb55105e27a19afad02952719bd44a112dee5ddcfa49bc43c63eg���g���
+���=zsolp2tmu7cvn60j5enfpzxh=	w1d7newzs7v5kfgv0tyzmj31
+���-user@example.com/	admin@example.com
+���
+f1_fan	admin_f1�UM=-	d314h5th6sj7qavofteo3yx0Miami Grand PrixMiamig�[��g�
+g���g���Q=3	i6newlfisg4786g2urfhr8pvJapanese Grand PrixSuzukag��g�C�g���g���V=7	g7k6i6j8efei93uocpskn3i9Australian Grand PrixMelbourneg�Β�g�}g���g���
+����=d314h5th6sj7qavofteo3yx0=i6newlfisg4786g2urfhr8pv=	g7k6i6j8efei93uocpskn3i9
+��k&��Z��D��D��p+
+�
+�H	=+%	iudyt4ulblea7m1egu2qzw6tNico HulkenbergHaas F1 TeamHULg���g���H	=+%	lxpc9e40snpwvrwid50b5u2mKevin MagnussenHaas F1 TeamMAGg���g���C	=##	srj7hirmkcf4d0h5qhkqzlz6Zhou GuanyuKick SauberZHOg���g���G	=+#	umc32w4qpojzt5ig72brd9t2Valtteri BottasMKick SauberBOTg���g���C	=)	zd60hjzyvufi5f85gwm3nb1tLogan SargeantWilliamsSARg���g���D	=+	s9zriw5nw6w1o417u48u9mt3Alexander AlbonWilliamsALBg���g���;	=%	jqf7avfjrmx47ozau7qopa2tYuki TsunodaRBTSUg���g���?	=-	q2ye66fo14mugd9o4dscpz6cDaniel RicciardoRBRICg���g���?	=%	n28b26v9woqucvdfzdgnwnkzPierre Gasly
+AlpineGASg���g���?	=%	cynvpeqsqfgcv3tsjg6zsmo8Esteban OconAlpineOCOg���g���E
+	=%%	gm73pgmdnxtr0ycy3xcx2lz4Lance StrollAston MartinSTRg���g���H		=+%	r5qgqmk40mlcmlfi0guvq2g2Fernando AlonsoAston MartinALOg���g���A	='	p4g7csrnorrinf7nlfosvc9fOscar PiastriQMcLarenPIAg���g���@	=%	kx0ik8vwgmh0jwh73kaxo75cLando NorrisMcLarenNORg���g���C	=)	ipo1axmoluv0i7w460k9xsxcGeorge Russell?MercedesRUSg���g���C	=)	arwd7ljmum5au5zngua5ey9xLewis Hamilton,MercedesHAMg���g���@	=%	bfuv7lttuavo302elrlqjkw7Carlos Sainz7FerrariSAIg���g���C	=+	rliyxzmio429yve3gh4o49lcCharles LeclercFerrariLECg���g���H	=%+	x4lhudgaeykj2ywp3tgshkx4Sergio PerezRed Bull RacingPERg���g���I	=)	+	gga4bz6gr3tuasgytzzoe2aaMax VerstappenRed Bull RacingVERg���g���
+�p����S�k6�����N��1=iudyt4ulblea7m1egu2qzw6t=lxpc9e40snpwvrwid50b5u2m=srj7hirmkcf4d0h5qhkqzlz6=umc32w4qpojzt5ig72brd9t2=zd60hjzyvufi5f85gwm3nb1t=s9zriw5nw6w1o417u48u9mt3=jqf7avfjrmx47ozau7qopa2t=q2ye66fo14mugd9o4dscpz6c=n28b26v9woqucvdfzdgnwnkz=cynvpeqsqfgcv3tsjg6zsmo8=gm73pgmdnxtr0ycy3xcx2lz4
+=r5qgqmk40mlcmlfi0guvq2g2	=p4g7csrnorrinf7nlfosvc9f=kx0ik8vwgmh0jwh73kaxo75c=ipo1axmoluv0i7w460k9xsxc=arwd7ljmum5au5zngua5ey9x=bfuv7lttuavo302elrlqjkw7=rliyxzmio429yve3gh4o49lc=x4lhudgaeykj2ywp3tgshkx4=	gga4bz6gr3tuasgytzzoe2aa
+a��y��a�i�����������qHULMAGZHOBOTSARALBTSURICGASOCOSTR
+ALO	PIANORRUSHAMSAILECPER	VER
+
+
+
