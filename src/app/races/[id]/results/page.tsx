@@ -21,22 +21,24 @@ type RaceResult = {
   driver: Driver;
 };
 
+type BetWithUser = Bet & {
+  user: User;
+  scoringDetails?: {
+    totalScore: number;
+    details: ScoringDetail[];
+  } | null;
+}
+
 type RaceWithResults = Race & {
   results: RaceResult[];
-  bets: Array<Bet & {
-    user: User;
-    scoringDetails?: {
-      totalScore: number;
-      details: ScoringDetail[];
-    }
-  }>;
+  bets: Array<BetWithUser>;
 };
 
 export default function RaceResultsPage() {
   const { id } = useParams();
   const { data: session } = useSession();
   const [race, setRace] = useState<RaceWithResults | null>(null);
-  const [userBet, setUserBet] = useState<(Bet & { user: User }) | null>(null);
+  const [userBet, setUserBet] = useState<BetWithUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function RaceResultsPage() {
 
           // Find user's bet if logged in
           if (session?.user?.id && raceData.bets) {
-            const userBet = raceData.bets.find((bet: Bet & { user: User }) =>
+            const userBet = raceData.bets.find((bet: BetWithUser) =>
               bet.user.id === session.user.id
             );
             if (userBet) {
@@ -237,7 +239,7 @@ export default function RaceResultsPage() {
       </div>
 
       {/* User's Bet Scoring Breakdown */}
-      {userBet && userBet.scoringDetails && (
+      {userBet && userBet.scoringDetails && 'details' in userBet.scoringDetails && (
         <Card>
           <CardHeader>
             <CardTitle>Your Scoring Breakdown</CardTitle>

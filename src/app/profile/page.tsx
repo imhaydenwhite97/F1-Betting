@@ -3,12 +3,28 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { format } from 'date-fns';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Trophy, Flame, Flag, User, BarChart } from 'lucide-react';
 import { Bet } from '@/lib/db/schema';
 import { toast } from 'sonner';
+
+// Create interface for Race
+interface Race {
+  id: string;
+  name: string;
+  date: string;
+}
+
+// Create interface for Bet
+interface UserBet {
+  id: string;
+  score: number | null;
+  race: Race;
+}
 
 type UserStats = {
   totalBets: number;
@@ -24,7 +40,7 @@ type UserStats = {
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [userBets, setUserBets] = useState<any[]>([]);
+  const [userBets, setUserBets] = useState<UserBet[]>([]);
   const [stats, setStats] = useState<UserStats>({
     totalBets: 0,
     completedBets: 0,
@@ -57,27 +73,27 @@ export default function ProfilePage() {
 
           // Calculate stats
           if (betsData.length > 0) {
-            const completedBets = betsData.filter((bet: any) => bet.score !== null);
-            const totalScore = completedBets.reduce((sum: number, bet: any) => sum + (bet.score || 0), 0);
-            const bestBet = completedBets.reduce((best: any, bet: any) =>
+            const completedBets = betsData.filter((bet: UserBet) => bet.score !== null);
+            const totalScore = completedBets.reduce((sum: number, bet: UserBet) => sum + (bet.score || 0), 0);
+            const bestBet = completedBets.reduce((best: UserBet | null, bet: UserBet) =>
               (bet.score || 0) > (best?.score || 0) ? bet : best, null);
 
             // Count 1st, 2nd, 3rd place finishes
-            const racesWithUser = completedBets.map((bet: any) => bet.race.id);
-            const raceWinners = completedBets.filter((bet: any) => {
+            const racesWithUser = completedBets.map((bet: UserBet) => bet.race.id);
+            const raceWinners = completedBets.filter((bet: UserBet) => {
               const raceId = bet.race.id;
               const raceScores = completedBets
-                .filter((b: any) => b.race.id === raceId)
-                .sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+                .filter((b: UserBet) => b.race.id === raceId)
+                .sort((a: UserBet, b: UserBet) => (b.score || 0) - (a.score || 0));
 
               return raceScores.length > 0 && raceScores[0].id === bet.id;
             });
 
-            const racePodiums = completedBets.filter((bet: any) => {
+            const racePodiums = completedBets.filter((bet: UserBet) => {
               const raceId = bet.race.id;
               const raceScores = completedBets
-                .filter((b: any) => b.race.id === raceId)
-                .sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+                .filter((b: UserBet) => b.race.id === raceId)
+                .sort((a: UserBet, b: UserBet) => (b.score || 0) - (a.score || 0));
 
               return raceScores.length > 2 &&
                 (raceScores[0].id === bet.id ||
@@ -262,7 +278,7 @@ export default function ProfilePage() {
         <CardContent>
           {userBets.length > 0 ? (
             <div className="space-y-4">
-              {userBets.slice(0, 5).map((bet: any) => (
+              {userBets.slice(0, 5).map((bet: UserBet) => (
                 <div
                   key={bet.id}
                   className="flex items-center justify-between p-3 border rounded hover:bg-muted/50 transition-colors"

@@ -13,7 +13,10 @@ import { Bet, Race, Driver } from '@/lib/db/schema';
 import { toast } from 'sonner';
 import { Prediction, ScoringBreakdown, ScoringDetail } from '@/lib/scoring';
 
-type UserBet = Bet & { race: Race };
+type UserBet = Bet & {
+  race: Race;
+  scoringDetails?: ScoringBreakdown | null;
+};
 
 export default function MyBetsPage() {
   const { data: session, status } = useSession();
@@ -232,7 +235,7 @@ function BetCard({ bet, drivers, showEdit = false, showResults = false }: BetCar
           </div>
         )}
 
-        {bet.score !== null && bet.scoringDetails && (
+        {bet.score !== null && bet.scoringDetails && 'details' in bet.scoringDetails && (
           <div>
             <h3 className="text-sm font-medium mb-1">Scoring Breakdown:</h3>
             <div className="max-h-40 overflow-y-auto text-xs space-y-1">
